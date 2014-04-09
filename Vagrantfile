@@ -1,8 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
 
 ## Cassandra cluster settings
-server_count = 3
+server_count = 1
 network = '192.168.2.'
 first_ip = 10
 
@@ -18,28 +19,35 @@ cassandra_tokens = []
               'initial_token' => 2**127 / server_count * i}
 end
 
-Vagrant::Config.run do |config|
+# Vagrant::Config.run do |config|
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   servers.each do |server|
-    config.vm.define server['name'] do |config2|
-      config2.vm.box = "precise"
-      config2.vm.box_url = "http://files.vagrantup.com/precise64.box"
-      config2.vm.host_name = server['name']
-      config2.vm.network :hostonly, server['ip']
-      config2.vm.provision :shell, :inline => "gem install chef --version 11.4.2 --no-rdoc --no-ri --conservative"
-      config2.vm.provision :chef_solo do |chef|
-        chef.log_level = :debug
-        chef.cookbooks_path = ["vagrant/cookbooks", "vagrant/site-cookbooks"]
-        chef.add_recipe "updater"
-        chef.add_recipe "java"
-        chef.add_recipe "cassandra::tarball"
-        chef.json = {
-          :cassandra => {'cluster_name' => 'My Cluster',
-                         'initial_token' => server['initial_token'],
-                         'seeds' => seeds.join(","),
-                         'listen_address' => server['ip'],
-                         'rpc_address' => server['ip']}
-        }
-      end
+    config.vm.box = "precise"
+    config.vm.host_name = server['name']
+    config.vm.network "private_network", ip: server['ip']
+    config.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      vb.customize ["modifyvm", :id, "--memory", 1024 ] # lower memory if you don't have that much.
     end
+
+    config.vm.provision :shell, :inline => "gem install chef --version 11.4.2 --no-rdoc --no-ri --conservative"
+    config.vm.provision :chef_solo do |chef|
+      chef.log_level = :debug
+      chef.cookbooks_path = ["vagrant/cookbooks", "vagrant/site-cookbooks"]
+      chef.add_recipe "updater"
+      chef.add_recipe "java"
+      chef.add_recipe "cassandra::tarball"
+      chef.json = {
+        :cassandra => {'cluster_name' => 'My Cluster',
+                       'initial_token' => server['initial_token'],
+                       'seeds' => seeds.join(","),
+                       'listen_address' => server['ip'],
+                       'broadcast_address' => server['ip'],
+                       'rpc_address' => server['ip']}
+      }
+    end
+    config.vm.define server['name'] 
   end
+  
 end

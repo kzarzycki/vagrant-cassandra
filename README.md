@@ -12,7 +12,8 @@ vagrant-cassandra quickly provisions a multi-VM [Cassandra](http://cassandra.apa
 
 Deploying a three-node Cassandra cluster:
 
-    git clone git://github.com/calebgroom/vagrant-cassandra.git
+    ~~git clone git://github.com/calebgroom/vagrant-cassandra.git~~
+    git clone git://github.com/kzarzycki/vagrant-cassandra.git
     cd vagrant-cassandra/vagrant
     librarian-chef install
     cd ..
