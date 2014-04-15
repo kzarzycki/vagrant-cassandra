@@ -31,6 +31,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--memory", 1024 ] # lower memory if you don't have that much.
     end
 
+    config.librarian_chef.cheffile_dir = "vagrant"
     config.vm.provision :shell, :inline => "gem install chef --version 11.4.2 --no-rdoc --no-ri --conservative"
     config.vm.provision :chef_solo do |chef|
       chef.log_level = :debug
@@ -39,6 +40,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.add_recipe "java"
       chef.add_recipe "cassandra::tarball"
       chef.json = {
+        :java => {
+            :jdk_version => "7"
+        },
         :cassandra => {'cluster_name' => 'My Cluster',
                        'initial_token' => server['initial_token'],
                        'seeds' => seeds.join(","),

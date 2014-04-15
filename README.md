@@ -7,6 +7,7 @@ vagrant-cassandra quickly provisions a multi-VM [Cassandra](http://cassandra.apa
 * Vagrant
 * VirtualBox
 * librarian
+* librarian-chef  ( sudo gem install librarian-chef --no-rdoc )
 
 ## Usage
 
