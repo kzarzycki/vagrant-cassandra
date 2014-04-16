@@ -13,11 +13,7 @@ vagrant-cassandra quickly provisions a multi-VM [Cassandra](http://cassandra.apa
 
 Deploying a three-node Cassandra cluster:
 
-    ~~git clone git://github.com/calebgroom/vagrant-cassandra.git~~
     git clone git://github.com/kzarzycki/vagrant-cassandra.git
-    cd vagrant-cassandra/vagrant
-    librarian-chef install
-    cd ..
     vagrant up
     
 SSH into the first node and check the status of the ring:
@@ -34,8 +30,8 @@ SSH into the first node and check the status of the ring:
 
 SSH into one of the nodes and open a command-line prompt to enter Cassandra commands:
 
-    vagrant ssh node2
-    /usr/local/cassandra/bin/cassandra-cli -h 192.168.2.11
+    vagrant ssh node1
+    /usr/local/cassandra/bin/cassandra-cli -h 192.168.2.10
     
 Copy and paste this sample data set:
 
