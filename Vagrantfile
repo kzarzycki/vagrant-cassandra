@@ -23,6 +23,7 @@ end
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   servers.each do |server|
     config.vm.box = "precise"
+    config.vm.box_url = "http://files.vagrantup.com/precise64.box"
     config.vm.host_name = server['name']
     config.vm.network "private_network", ip: server['ip']
     config.vm.provider :virtualbox do |vb|
