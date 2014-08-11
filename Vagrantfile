@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-      vb.customize ["modifyvm", :id, "--memory", 1024 ] # lower memory if you don't have that much.
+      vb.customize ["modifyvm", :id, "--memory", 2048 ] # lower memory if you don't have that much.
     end
 
     config.librarian_chef.cheffile_dir = "vagrant"
@@ -39,6 +39,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chef.cookbooks_path = ["vagrant/cookbooks", "vagrant/site-cookbooks"]
       chef.add_recipe "updater"
       chef.add_recipe "java"
+      chef.add_recipe "build-essential"
       chef.add_recipe "cassandra::tarball"
       chef.json = {
         :java => {
