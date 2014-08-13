@@ -33,13 +33,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.librarian_chef.cheffile_dir = "vagrant"
+    config.vm.provision :shell, :inline => "sudo aptitude -y install build-essential"
     config.vm.provision :shell, :inline => "gem install chef --version 11.4.2 --no-rdoc --no-ri --conservative"
     config.vm.provision :chef_solo do |chef|
       chef.log_level = :debug
       chef.cookbooks_path = ["vagrant/cookbooks", "vagrant/site-cookbooks"]
       chef.add_recipe "updater"
       chef.add_recipe "java"
-      chef.add_recipe "build-essential"
       chef.add_recipe "cassandra::tarball"
       chef.json = {
         :java => {
